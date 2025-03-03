@@ -28,7 +28,7 @@ setup(
     entry_points={
         'console_scripts': [
 
-            # Training nodes
+            # Training nodes ##
             'tr_current_posx        = edu_example.tr_current_posx',
             'tr_joint_states        = edu_example.tr_joint_states',
             'tr_move                = edu_example.tr_move',
