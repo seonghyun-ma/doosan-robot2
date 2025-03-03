@@ -29,10 +29,11 @@ setup(
         'console_scripts': [
 
             # Training nodes
-            'tr_current_posx      = edu_example.tr_current_posx',
-            'tr_joint_states      = edu_example.tr_joint_states',
-            'tr_tool_force        = edu_example.tr_tool_force',
-            'tr_move              = edu_example.tr_move',
+            'tr_current_posx        = edu_example.tr_current_posx',
+            'tr_joint_states        = edu_example.tr_joint_states',
+            'tr_move                = edu_example.tr_move',
+            'tr_tool_force          = edu_example.tr_tool_force',
+            'tr_tool_force_reaction = edu_example.tr_tool_force_reaction',
 
             # Keyboard jog
             'keyboard_publisher     = edu_example.keyboard_publisher:main',
