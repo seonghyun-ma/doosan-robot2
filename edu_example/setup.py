@@ -35,10 +35,17 @@ setup(
             'tr_tool_force          = edu_example.tr_tool_force',
             'tr_tool_force_reaction = edu_example.tr_tool_force_reaction',
 
+            # Force Reacion
+            'tr_force_reaction      = edu_example.tr_force_reaction',
+
             # Keyboard jog
             'keyboard_publisher     = edu_example.keyboard_publisher:main',
             'keyboard_control       = edu_example.keyboard_control:main',
-            
+
+            # Multi Robots
+            'multi_robot_1_pp       = edu_example.multi_robot_1_pp:main',
+            'multi_robot_2_pp       = edu_example.multi_robot_2_pp:main',
+                        
         ],
     },
 )
