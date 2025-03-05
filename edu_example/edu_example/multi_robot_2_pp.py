@@ -19,36 +19,10 @@ logger = get_logger('multi_robot_2_pp')
 
 ######################## 함수 ########################
 
-# # ros2 service call /dsr01/aux_control/get_current_posj dsr_msgs2/srv/GetCurrentPosj "{}"
-# def get_target_joint(node, target_robot): # 
-#     client = node.create_client(GetCurrentPosj, f'/{target_robot}/aux_control/get_current_posj')
-#     while not client.wait_for_service(timeout_sec=1.0):
-#         node.get_logger().info('Service not available, waiting...')
-#     req = GetCurrentPosj.Request()
-#     future = client.call_async(req)
-#     rclpy.spin_until_future_complete(node, future)
-#     response = future.result()
-#     if response is not None:
-#         logger.info(f"{target_robot} posj")
-#         if response.success:
-#             return response.pos
-#         else:
-#             print("Success flag is False.")
-#             return None
-#     else:
-#         logger.error("Service call failed")
-#         # print("Failed to get signal.")
-#         return None
-
-
 j_vel = 60
 j_acc = 60
 l_vel = [500,500]
 l_acc = [500,500]
-
-
-
-
 
 def main(args=None):
     print('## start ##')
@@ -65,7 +39,7 @@ def main(args=None):
     except ImportError as e: print(f"Error importing DSR_ROBOT2: {e}"); return
     set_robot_mode(ROBOT_MODE_AUTONOMOUS) # ROBOT_MODE_MANUAL, ROBOT_MODE_AUTONOMOUS
 
-    class JointStateSubscriber1(Node):
+    class JointStateSubscriber2(Node):
         def __init__(self, target_robot):
             super().__init__('joint_state_subscriber_2', namespace='dsr02')
             self.subscription = self.create_subscription(
@@ -81,7 +55,7 @@ def main(args=None):
             self.received_data = msg.data
             # self.get_logger().info(f'Received joint state: {self.received_data}')
 
-    joint_state_subscriber_1 = JointStateSubscriber1('dsr01')
+    joint_state_subscriber_2 = JointStateSubscriber2('dsr01')
 
     ######################## def ########################
     
@@ -111,17 +85,6 @@ def main(args=None):
         release()
         movel([0,0, 115,0,0,0], vel=a_l_vel, acc=a_l_acc, mod=1) #  220
         return
-    
-    
-    '''
-    기본
-    367, 6, 425,   0,180,0
-    픽 위치
-    200.75, -511.54, 177.27
-    플레이스 위치
-    459.35, -164.89, 183.50
-
-    '''
 
     ######################## 메인 ########################
     
@@ -129,7 +92,7 @@ def main(args=None):
     time.sleep(1)
     movej([0,   0,  90, 0, 90,0], vel=j_vel, acc=j_acc)
     release()
-    time.sleep(5)
+    time.sleep(5) # Start later (The first robot starts moving and then it starts.)
 
     try:
         while rclpy.ok():
@@ -137,10 +100,9 @@ def main(args=None):
             # 다른 로봇의 각도 획득
             my_robot = 'dsr02'
             target_robot = 'dsr01'
-            # target_joint = get_target_joint(node, target_robot=target_robot)
 
-            rclpy.spin_once(joint_state_subscriber_1, timeout_sec=0.1)
-            target_joint = joint_state_subscriber_1.received_data
+            rclpy.spin_once(joint_state_subscriber_2, timeout_sec=0.1)
+            target_joint = joint_state_subscriber_2.received_data
             
             print(f'wait... [{my_robot}] ({i}) : {target_robot} - {target_joint}'); i+=1
 
@@ -154,20 +116,9 @@ def main(args=None):
                 place()
                 movej([0,   0,  90, 0, 90,0], vel=j_vel, acc=j_acc)
 
-                # # 기존
-                # movel([288,-432,220,0,180,0], vel=l_vel, acc=l_acc)
-                # pick()
-                # movel([328, 151,220,0,180,0], vel=l_vel, acc=l_acc) # 
-                # place()
-                # pick()
-                # movel([288,-432,220,0,180,0], vel=l_vel, acc=l_acc)
-                # place()
-                # movej([0,   0,  90, 0, 90,0], vel=j_vel, acc=j_acc)
-
                 time.sleep(3) # 다른 로봇 이동 시작까지 기다리는 부분
                 i = 1
             time.sleep(0.5)
-
 
     ######################## fin ########################
     except KeyboardInterrupt:

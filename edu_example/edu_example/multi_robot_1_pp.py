@@ -19,36 +19,10 @@ logger = get_logger('multi_robot_1_pp')
 
 ######################## 함수 ########################
 
-# # ros2 service call /dsr01/aux_control/get_current_posj dsr_msgs2/srv/GetCurrentPosj "{}"
-# def get_target_joint(node, target_robot): # 
-#     client = node.create_client(GetCurrentPosj, f'/{target_robot}/aux_control/get_current_posj')
-#     while not client.wait_for_service(timeout_sec=1.0):
-#         node.get_logger().info('Service not available, waiting...')
-#     req = GetCurrentPosj.Request()
-#     future = client.call_async(req)
-#     rclpy.spin_until_future_complete(node, future)
-#     response = future.result()
-#     if response is not None:
-#         logger.info(f"{target_robot} posj")
-#         if response.success:
-#             return response.pos
-#         else:
-#             print("Success flag is False.")
-#             return None
-#     else:
-#         logger.error("Service call failed")
-#         # print("Failed to get signal.")
-#         return None
-
-
 j_vel = 60
 j_acc = 60
 l_vel = [500,500]
 l_acc = [500,500]
-
-
-
-
 
 def main(args=None):
     print('## start ##')
@@ -111,20 +85,6 @@ def main(args=None):
         release()
         movel([0,0, 200,0,0,0], vel=a_l_vel, acc=a_l_acc, mod=1) #  220
         return
-    
-    
-
-
-
-    '''
-    기본
-    367, 6, 294,   0,180,0
-    픽 위치
-    206.38, -504.71, 50.65
-    플레이스 위치
-    462.73, -160.25, 53.21
-    
-    '''
 
     ######################## 메인 ########################
     
@@ -139,7 +99,6 @@ def main(args=None):
             # 다른 로봇의 각도 획득
             my_robot = 'dsr01'
             target_robot = 'dsr02'
-            # target_joint = get_target_joint(node, target_robot=target_robot)
 
             rclpy.spin_once(joint_state_subscriber_1, timeout_sec=0.1)
             target_joint = joint_state_subscriber_1.received_data
@@ -156,20 +115,9 @@ def main(args=None):
                 place()
                 movej([0,   0,  90, 0, 90,0], vel=j_vel, acc=j_acc)
 
-                # # 기존
-                # movel([355,-220,340,0,180,0], vel=l_vel, acc=l_acc)
-                # pick()
-                # movel([668,  79,350,0,180,0], vel=l_vel, acc=l_acc) # 
-                # place()
-                # pick()
-                # movel([355,-220,340,0,180,0], vel=l_vel, acc=l_acc)
-                # place()
-                # movej([0,   0,  90, 0, 90,0], vel=j_vel, acc=j_acc)
-
                 time.sleep(3) # 다른 로봇 이동 시작까지 기다리는 부분
                 i = 1
             time.sleep(0.5)
-
 
     ######################## fin ########################
     except KeyboardInterrupt:
