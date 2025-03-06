@@ -23,15 +23,14 @@ setup(
     license='BSD',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [       
-                 
+        'console_scripts': [
+
             # Force Reacion
             'force_reaction     = edu_example.force_reaction:main',
                        
             # Multi Robots
             'multi_robot_1      = edu_example.multi_robot_1:main',
             'multi_robot_2      = edu_example.multi_robot_2:main',
-            
             
             # Keyboard Jog
             'keyboard_control   = edu_example.keyboard_control:main',
