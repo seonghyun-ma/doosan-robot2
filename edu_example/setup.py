@@ -1,11 +1,8 @@
-
-# ma 241011 1435
-
 from setuptools import find_packages, setup
-from glob import glob # 추가
+from glob import glob
 
 package_name = 'edu_example'
-share_dir = 'share/' + package_name # 추가
+share_dir = 'share/' + package_name
 
 setup(
     name=package_name,
@@ -14,9 +11,9 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
-        (share_dir, ['package.xml']), # 수정
-        (share_dir + '/launch', glob('launch/*')), # 추가
-        (share_dir + '/rviz', glob('rviz/*')), # 추가
+        (share_dir, ['package.xml']),
+        (share_dir + '/launch', glob('launch/*')),
+        (share_dir + '/rviz', glob('rviz/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,26 +23,20 @@ setup(
     license='BSD',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
-
-            # Training nodes ##
-            'tr_current_posx        = edu_example.tr_current_posx',
-            'tr_joint_states        = edu_example.tr_joint_states',
-            'tr_move                = edu_example.tr_move',
-            'tr_tool_force          = edu_example.tr_tool_force',
-            'tr_tool_force_reaction = edu_example.tr_tool_force_reaction',
-
+        'console_scripts': [       
+                 
             # Force Reacion
-            'tr_force_reaction      = edu_example.tr_force_reaction',
-
-            # Keyboard jog
-            'keyboard_publisher     = edu_example.keyboard_publisher:main',
-            'keyboard_control       = edu_example.keyboard_control:main',
-
+            'force_reaction     = edu_example.force_reaction:main',
+                       
             # Multi Robots
-            'multi_robot_1_pp       = edu_example.multi_robot_1_pp:main',
-            'multi_robot_2_pp       = edu_example.multi_robot_2_pp:main',
-                        
+            'multi_robot_1      = edu_example.multi_robot_1:main',
+            'multi_robot_2      = edu_example.multi_robot_2:main',
+            
+            
+            # Keyboard Jog
+            'keyboard_control   = edu_example.keyboard_control:main',
+            'keyboard_publisher = edu_example.keyboard_publisher:main',
+
         ],
     },
 )
