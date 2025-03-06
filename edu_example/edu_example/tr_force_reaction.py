@@ -13,7 +13,7 @@ import DR_init
 DR_init.__dsr__id = 'dsr01'
 DR_init.__dsr__model = 'm0609'
 
-logger = get_logger('x_mas_gripper')
+logger = get_logger('tr_force_re')
 
 
 
@@ -24,7 +24,7 @@ def main(args=None):
 
     ## 초기 설정
     rclpy.init(args=args) # ROS2 클라이언트 초기화
-    node = rclpy.create_node('x_mas_gripper', namespace='dsr01') # 노드생성
+    node = rclpy.create_node('tr_force_re', namespace='dsr01') # 노드생성
     DR_init.__dsr__node = node # 두산 로봇 설정 모듈에 노드 설정    
 
     ## 두산 로봇 작동 모듈 임포트
