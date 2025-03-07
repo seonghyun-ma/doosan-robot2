@@ -1,4 +1,10 @@
 
+
+
+
+
+
+##### Import necessary libraries (initial process)
 import rclpy
 from rclpy.logging import get_logger
 import time
@@ -10,10 +16,20 @@ from dsr_msgs2.msg import JogMultiAxis
 from dsr_msgs2.srv import GetCtrlBoxDigitalOutput
 import numpy as np
 
-## 두산 로봇 설정 모듈 import
+
+
+
+
+##### Import Doosan robot configuration module
 import DR_init
 DR_init.__dsr__id       = 'dsr01'
 DR_init.__dsr__model    = 'm0609'
+
+
+
+
+
+##### Create logger
 
 logger = get_logger('keyboard_control')
 
@@ -22,21 +38,37 @@ def main(args=None):
 
 
 
-    ######################## 설정 ########################
-    rclpy.init(args=args)
-    node = rclpy.create_node('test_node', namespace='dsr01')
-    
-    DR_init.__dsr__node = node
+
+
+    ##### Initial setup
+    rclpy.init(args=args) # Initialize ROS2 client
+    node = rclpy.create_node('test_node', namespace='dsr01') # Create node
+    DR_init.__dsr__node = node # Set node in Doosan robot configuration module
+
+
+
+
+
+    ##### Import Doosan robot operation module
     try:
         from DSR_ROBOT2 import (
             movej, movel, amovel, jog, set_robot_mode, set_digital_output, get_digital_output, check_motion, amovej, set_tool_digital_output,
             ROBOT_MODE_MANUAL, ROBOT_MODE_AUTONOMOUS
         )
     except ImportError as e: print(f"Error importing DSR_ROBOT2: {e}"); return
+
+
+
+
+
+    ##### Set robot mode
     set_robot_mode(ROBOT_MODE_MANUAL) # ROBOT_MODE_MANUAL, ROBOT_MODE_AUTONOMOUS
 
-    ######################## 클래스 ########################
 
+
+
+
+    ##### Create Class : Publisher
     class JogMultiAxisPublisher(Node):
         def __init__(self):
             super().__init__('jog_multi_axis_publisher')
@@ -51,6 +83,10 @@ def main(args=None):
             self.get_logger().info(f'Published jog multi-axis command: {msg}')
 
 
+
+
+
+    ##### Create Class : Subscriber
     class KeyboardSubscriber(Node):
         def __init__(self):
             super().__init__('keyboard_subscriber')
@@ -68,8 +104,11 @@ def main(args=None):
             self.new_data_received = True
             # self.get_logger().info(f'I received: "{msg.data}"')
 
-            
-    ######################## 함수 ########################
+
+
+
+
+    ##### Define grasp & release
     def grasp():
         # print('# grasp')
         set_tool_digital_output(index=2, val=0)
@@ -80,8 +119,11 @@ def main(args=None):
         set_tool_digital_output(index=2, val=1)
         set_tool_digital_output(index=3, val=0)
 
-    ######################## 메인 ########################
 
+
+
+
+    ######################## main ########################
     previous_value = ''
     keyboard_subscriber = KeyboardSubscriber()
     jog_multi_axis_publisher = JogMultiAxisPublisher()
@@ -91,12 +133,14 @@ def main(args=None):
         while rclpy.ok():
             rclpy.spin_once(keyboard_subscriber, timeout_sec=0.1)
 
-            if keyboard_subscriber.new_data_received: # 새로운 데이터가 입력된 경우에만 실행
+            # Execute only when new data is entered
+            if keyboard_subscriber.new_data_received:
                 keyboard_subscriber.new_data_received = False
                 key_value = keyboard_subscriber.received_data
                 print(f'key_value : {key_value}')
                 
-                if previous_value != key_value : # 직전과 같지 않을 경우에만
+                # Only if the input value is different from the previous one
+                if previous_value != key_value : 
                     if   key_value == '+X':
                         print(key_value)
                         jog_multi_axis_publisher.publish_jog([1,0,0,0,0,0], 0, 50)
@@ -137,10 +181,14 @@ def main(args=None):
                         print(key_value); grasp()
 
                     previous_value = key_value
-    
-    ######################## 종료 ########################
+
     except KeyboardInterrupt: print("## Shutdown requested ##")
-    
+
+
+
+
+
+
     keyboard_subscriber.destroy_node()
     rclpy.shutdown()
     print("## Node shut down ##")

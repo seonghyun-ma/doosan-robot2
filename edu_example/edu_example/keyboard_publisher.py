@@ -1,3 +1,9 @@
+
+
+
+
+
+##### Import necessary libraries (initial process)
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Int32, String
@@ -6,6 +12,11 @@ import select
 import termios
 import tty
 
+
+
+
+
+##### Create Class
 class KeyboardPublisher(Node):
     def __init__(self):
         super().__init__('keyboard_publisher')
@@ -20,12 +31,22 @@ class KeyboardPublisher(Node):
         self.get_logger().info('f: up (-Z)')
         self.run()
 
+
+
+
+
+    ##### method for message publish
     def publish_message(self, data: str):
         msg = String()
         msg.data = data
         self.publisher_.publish(msg)
         self.get_logger().info(f'Pub: {data}')
 
+
+
+
+
+    ##### Input recognition and topic message publishing
     def run(self):
         old_attr = termios.tcgetattr(sys.stdin)
         tty.setcbreak(sys.stdin.fileno())
@@ -62,7 +83,7 @@ class KeyboardPublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    keyboard_publisher = KeyboardPublisher()
+    keyboard_publisher = KeyboardPublisher() # Create KeyboardPublisher instance -> start "run" method
     rclpy.shutdown()
 
 
