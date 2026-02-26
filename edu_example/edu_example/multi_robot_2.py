@@ -149,11 +149,12 @@ def main(args=None):
             if i>4 and target_joint is not None and np.allclose(target_joint, [ 0.,  0., 90.,  0., 90.,  0.], atol=1):
                 
                 # Operation cmmand
-                movel([193.51, -497.32, 310, 0, 180, 0], vel=l_vel, acc=l_acc)
-                pick()
-                movel([460.21, -165.96, 310, 0, 180, 0], vel=l_vel, acc=l_acc) # 
-                place()
-                movej([0,   0,  90, 0, 90,0], vel=j_vel, acc=j_acc)
+                # pick()
+                # place()
+                movej([0, 0, 90, 0, 90,0], vel=j_vel, acc=j_acc)
+                movej([0, 0,100, 0, 90,0], vel=j_vel, acc=j_acc)
+                movej([0, 0, 90, 0,100,0], vel=j_vel, acc=j_acc)
+                movej([0, 0, 90, 0, 90,0], vel=j_vel, acc=j_acc)
 
                 # The part where it waits until another robot starts moving
                 time.sleep(3)
